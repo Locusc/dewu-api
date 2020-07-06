@@ -1,8 +1,8 @@
 import hashlib
 import math
 import time
-
 import requests
+
 from flask import Blueprint, jsonify, json
 from urllib.parse import quote
 
@@ -52,7 +52,7 @@ def handle_search_api(keywords, page=0):
           'sign={}&title={}&page={}&sortType={}' \
           '&sortMode={}&limit=20&showHot=-1&unionId='.format(sign, quote(keywords), page, sortType, sortMode)
     res_data = requests.get(url, headers=headers).text
-    return res_data
+    return json.loads(res_data)['data']
 
 
 # 关键词搜索商品接口
@@ -62,9 +62,19 @@ def goods_search_by_keyword(keywords):
     # print(res_data)
 
     collection = []
-    count = math.ceil(int(json.loads(res_data)['data']['total']) / 20)
+    count = math.ceil(int(res_data['total']) / 20)
     for i in range(count):
-        collection.append(handle_search_api(keywords, i))
+        productList = handle_search_api(keywords, i)['productList']
+        # data = {}
+        # for j in productList:
+        #     data = {
+        #         'productId': productList[j]['productId'],
+        #         'title': productList[j]['title'],
+        #         'price': productList[j]['price'],
+        #         'logoUrl': productList[j]['logoUrl']
+        #     }
+        collection.extend(productList)
+        print('第%d次' % i)
         time.sleep(3)
 
     return jsonify(collection)
