@@ -1,0 +1,2 @@
+FLASK_APP=dewu
+FLASK_ENV=development
