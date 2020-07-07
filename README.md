@@ -1,2 +1,5 @@
 ## dewu-api
-### dewuApp数据 学习使用
+
+### 使用
+pip install -r requirements.txt
+flask run
