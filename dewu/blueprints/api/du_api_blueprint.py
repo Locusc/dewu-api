@@ -6,6 +6,8 @@ import requests
 from flask import Blueprint, jsonify, json, request
 from urllib.parse import quote
 
+from dewu.extensions import redis_store
+
 du_api_bp = Blueprint('du_api_blueprint', __name__)
 
 # 请求头部
@@ -60,7 +62,7 @@ def handle_search_api(keywords, page=0):
 @du_api_bp.route('/search/<string:keywords>', methods=['GET'])
 def product_search_by_keyword(keywords):
     res_data = handle_search_api(keywords)
-    # print(res_data)
+    print(res_data)
 
     collection = []
     count = math.ceil(int(res_data['total']) / 20)
@@ -78,6 +80,7 @@ def product_search_by_keyword(keywords):
         print('第%d次' % i)
         time.sleep(3)
 
+    redis_store.set('search_%s' % keywords, str(collection), 60)
     return jsonify(collection)
 
 
