@@ -64,7 +64,7 @@ def product_search_by_keyword(keywords):
     res_data = handle_search_api(keywords)
     print(res_data)
 
-    collection = []
+    collection = list()
     count = math.ceil(int(res_data['total']) / 20)
     for i in range(count):
         productList = handle_search_api(keywords, i)['productList']
@@ -80,7 +80,7 @@ def product_search_by_keyword(keywords):
         print('第%d次' % i)
         time.sleep(3)
 
-    redis_store.set('search_%s' % keywords, str(collection), 60)
+    redis_store.set('search_%s' % keywords, str(collection), 86400)
     return jsonify(collection)
 
 
